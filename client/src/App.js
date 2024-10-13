@@ -73,7 +73,7 @@ const DictionaryComponent = () => {
             const utterance = new SpeechSynthesisUtterance(text);
             let lang = 'en-US';
             if (isTranslationVisible) {
-                lang = 'pt-PT';
+                lang = 'pt-BR';
             } else {
                 lang = 'ru-RU';
             }
