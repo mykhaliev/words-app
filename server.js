@@ -9,31 +9,35 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 
 // Sample dictionary data
-let dictionary = {};
+let words = {};
+let phrases = {};
 
-const loadDictionary = () => {
-    const filePath = path.join(__dirname, 'dictionary.csv'); // Adjust the path as needed
-    fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading dictionary file:', err);
-            return;
+const loadDictionary = (filename) => {
+    const filePath = path.join(__dirname, filename);
+    const data = fs.readFileSync(filePath, 'utf8');
+
+    const dictionary = {};
+    const lines = data.split('\n');
+
+    lines.forEach(line => {
+        const [word, translation] = line.split(';');
+        if (word && translation) {
+            dictionary[word.trim()] = translation.trim();
         }
-
-        // Transform CSV data into a dictionary object
-        const lines = data.trim().split('\n');
-        dictionary = lines.reduce((dict, line) => {
-            const [word, translation] = line.split(';');
-            dict[word.trim()] = translation.trim();
-            return dict;
-        }, {});
     });
+    return dictionary;
 };
 
-// Load dictionary on server start
-loadDictionary();
+const wordsDictionary = loadDictionary('dictionary.csv');
+const phrasesDictionary = loadDictionary('phrases.csv');
 
 app.get('/words', (req, res) => {
-    res.json(dictionary);
+    res.json(wordsDictionary);
+});
+
+// Example endpoint to get phrases
+app.get('/phrases', (req, res) => {
+    res.json(phrasesDictionary);
 });
 
 // Serve static files from the React app

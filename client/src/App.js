@@ -6,12 +6,14 @@ const DictionaryComponent = () => {
     const [currentKey, setCurrentKey] = useState('');
     const [shownKeys, setShownKeys] = useState(new Set());
     const [isTranslationVisible, setIsTranslationVisible] = useState(false); // State to toggle translation visibility
-
+    const [isPhrase, setIsPhrase] = useState(false); // State to toggle between words and phrases
+    // const host = "http://localhost:5000";
+    const host = "https://words-app.onrender.com";
 
     useEffect(() => {
         const fetchWords = async () => {
             try {
-                const response = await fetch('https://words-app.onrender.com/words');
+                const response = await fetch(isPhrase ? host + '/phrases' : host + '/words');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -24,7 +26,7 @@ const DictionaryComponent = () => {
         };
 
         fetchWords();
-    }, []);
+    }, [isPhrase]); // Fetch words or phrases based on the category
 
     const getRandomKey = (availableKeys) => {
         const randomIndex = Math.floor(Math.random() * availableKeys.length);
@@ -68,28 +70,68 @@ const DictionaryComponent = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100vh' // Full height to center vertically
+            height: '100vh',
+            padding: '0 20px' // Add padding for better mobile view
         }}>
             <div>
+                <div style={{textAlign: 'center', margin: '20px 0'}}>
+                    <button
+                        onClick={() => setIsPhrase(false)}
+                        style={{
+                            padding: '10px 20px',
+                            fontSize: '1.2em',
+                            marginRight: '10px',
+                            backgroundColor: isPhrase ? '#ddd' : '#007bff',
+                            color: isPhrase ? '#000' : '#fff',
+                            border: 'none',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Words
+                    </button>
+                    <button
+                        onClick={() => setIsPhrase(true)}
+                        style={{
+                            padding: '10px 20px',
+                            fontSize: '1.2em',
+                            backgroundColor: isPhrase ? '#007bff' : '#ddd',
+                            color: isPhrase ? '#fff' : '#000',
+                            border: 'none',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Phrases
+                    </button>
+                </div>
                 {currentKey ? (
                     <div
                         className="badge"
                         onClick={handleBadgeClick}
                         style={{
-                            padding: '20px',
+                            padding: '60px', // Increased padding for a larger badge
                             backgroundColor: '#007bff',
                             color: 'white',
-                            borderRadius: '5px',
+                            borderRadius: '10px', // Slightly more rounded corners
                             cursor: 'pointer',
                             textAlign: 'center',
                             margin: '20px',
-                            fontSize: '24px'
+                            fontSize: '2.25em', // Increased font size
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Added shadow for a better look
+                            transition: 'transform 0.2s', // Transition for hover effect
                         }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                        }} // Slightly grow on hover
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }} // Return to original size
                     >
                         {isTranslationVisible ? dictionary[currentKey] : currentKey}
                     </div>
                 ) : (
-                    <button onClick={handleBadgeClick}>Start</button>
+                    <button onClick={handleBadgeClick} style={{padding: '10px 20px', fontSize: '1.2em'}}>
+                        Start
+                    </button>
                 )}
             </div>
         </div>
