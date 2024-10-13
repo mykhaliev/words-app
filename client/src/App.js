@@ -1,4 +1,7 @@
 import React, {useEffect, useState} from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faVolumeUp} from '@fortawesome/free-solid-svg-icons';
+import './App.css';
 
 const DictionaryComponent = () => {
     const [dictionary, setDictionary] = useState({});
@@ -7,8 +10,8 @@ const DictionaryComponent = () => {
     const [shownKeys, setShownKeys] = useState(new Set());
     const [isTranslationVisible, setIsTranslationVisible] = useState(false); // State to toggle translation visibility
     const [isPhrase, setIsPhrase] = useState(false); // State to toggle between words and phrases
-    // const host = "http://localhost:5000";
-    const host = "https://words-app.onrender.com";
+    const host = "http://localhost:5000";
+    // const host = "https://words-app.onrender.com";
 
     useEffect(() => {
         const fetchWords = async () => {
@@ -56,6 +59,20 @@ const DictionaryComponent = () => {
         }
     };
 
+    const readWord = () => {
+        if (currentKey) {
+            let text = isTranslationVisible ? dictionary[currentKey] : currentKey;
+            const utterance = new SpeechSynthesisUtterance(text);
+            if (isTranslationVisible) {
+                utterance.lang = 'pt-PT';
+            } else {
+                utterance.lang = 'ru-RU';
+            }
+
+            speechSynthesis.speak(utterance);
+        }
+    };
+
     // On the initial render, get the first random key
     useEffect(() => {
         if (keys.length > 0) {
@@ -66,13 +83,7 @@ const DictionaryComponent = () => {
     }, [keys]);
 
     return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh',
-            padding: '0 20px' // Add padding for better mobile view
-        }}>
+        <div className="app">
             <div>
                 <div style={{textAlign: 'center', margin: '20px 0'}}>
                     <button
@@ -133,6 +144,12 @@ const DictionaryComponent = () => {
                         Start
                     </button>
                 )}
+                <div className="badge">
+                    <button onClick={readWord} className="sound-button">
+                        <FontAwesomeIcon icon={faVolumeUp}/>
+                    </button>
+                </div>
+
             </div>
         </div>
     );
