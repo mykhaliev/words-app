@@ -10,8 +10,8 @@ const DictionaryComponent = () => {
     const [shownKeys, setShownKeys] = useState(new Set());
     const [isTranslationVisible, setIsTranslationVisible] = useState(false); // State to toggle translation visibility
     const [isPhrase, setIsPhrase] = useState(false); // State to toggle between words and phrases
-    const host = "http://localhost:5000";
-    // const host = "https://words-app.onrender.com";
+    // const host = "http://localhost:5000";
+    const host = "https://words-app.onrender.com";
 
     useEffect(() => {
         const fetchWords = async () => {
