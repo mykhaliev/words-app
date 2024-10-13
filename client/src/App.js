@@ -78,8 +78,9 @@ const DictionaryComponent = () => {
                 lang = 'ru-RU';
             }
             const voices = speechSynthesis.getVoices();
-            const portugueseVoice = voices.find(voice => voice.lang === lang);
+            const selectedVoice = voices.find(voice => voice.lang === lang);
             utterance.lang = lang;
+            utterance.voice = selectedVoice;
             speechSynthesis.speak(utterance);
         }
     };
