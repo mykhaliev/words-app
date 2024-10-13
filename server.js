@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -8,14 +9,28 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 
 // Sample dictionary data
-const dictionary = [
-    { word: "Hello", translation: "Hola" },
-    { word: "Goodbye", translation: "Adiós" },
-    { word: "Please", translation: "Por favor" },
-    { word: "Thank you", translation: "Gracias" },
-    { word: "Yes", translation: "Sí" },
-    { word: "No", translation: "No" }
-];
+let dictionary = {};
+
+const loadDictionary = () => {
+    const filePath = path.join(__dirname, 'dictionary.csv'); // Adjust the path as needed
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading dictionary file:', err);
+            return;
+        }
+
+        // Transform CSV data into a dictionary object
+        const lines = data.trim().split('\n');
+        dictionary = lines.reduce((dict, line) => {
+            const [word, translation] = line.split(';');
+            dict[word.trim()] = translation.trim();
+            return dict;
+        }, {});
+    });
+};
+
+// Load dictionary on server start
+loadDictionary();
 
 app.get('/words', (req, res) => {
     res.json(dictionary);
@@ -31,3 +46,4 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
