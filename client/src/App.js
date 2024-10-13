@@ -31,6 +31,14 @@ const DictionaryComponent = () => {
         fetchWords();
     }, [isPhrase]); // Fetch words or phrases based on the category
 
+    const getVoices = () => {
+        const voices = speechSynthesis.getVoices();
+        console.log(voices);
+    };
+
+    speechSynthesis.onvoiceschanged = getVoices; // Fetch voices when they change
+    getVoices(); // Call this to log immediately
+
     const getRandomKey = (availableKeys) => {
         const randomIndex = Math.floor(Math.random() * availableKeys.length);
         return availableKeys[randomIndex];
@@ -63,12 +71,15 @@ const DictionaryComponent = () => {
         if (currentKey) {
             let text = isTranslationVisible ? dictionary[currentKey] : currentKey;
             const utterance = new SpeechSynthesisUtterance(text);
+            let lang = 'en-US';
             if (isTranslationVisible) {
-                utterance.lang = 'pt-PT';
+                lang = 'pt-PT';
             } else {
-                utterance.lang = 'ru-RU';
+                lang = 'ru-RU';
             }
-
+            const voices = speechSynthesis.getVoices();
+            const portugueseVoice = voices.find(voice => voice.lang === lang);
+            utterance.lang = lang;
             speechSynthesis.speak(utterance);
         }
     };
