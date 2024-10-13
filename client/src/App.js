@@ -9,7 +9,7 @@ const App = () => {
 
     useEffect(() => {
         const fetchWords = async () => {
-            const response = await axios.get('http://localhost:5000/words');
+            const response = await axios.get('https://words-app.onrender.com/words');
             setWords(response.data);
         };
 
