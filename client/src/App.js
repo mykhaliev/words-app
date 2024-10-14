@@ -10,8 +10,6 @@ const DictionaryComponent = () => {
     const [shownKeys, setShownKeys] = useState(new Set());
     const [isTranslationVisible, setIsTranslationVisible] = useState(false);
     const [activeButton, setActiveButton] = useState(0);
-    const [isPhrase, setIsPhrase] = useState(false);
-    const [isWords, setIsWords] = useState(true);
     const [searchTerm, setSearchTerm] = useState(''); // For input field
     const [isLoading, setIsLoading] = useState(false); // For loading animation
 
